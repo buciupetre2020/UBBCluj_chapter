@@ -1,20 +1,30 @@
 project:
   type: manuscript
-
+  
 manuscript:
   article: index.qmd
+  notebooks: 
+    - notebook: notebooks/explorare.qmd
+      title: Exlorarea Datelor
+  code-links: 
+    - repo: buciupetre2020/UBBCluj_chapter
 
 format:
   html:
     comments:
       hypothesis: true
+    toc: true
+    toc-location: left
+    toc-title: Cuprins
+    abstract-title: Abstract
+    theme: solar
   docx: default
-  
+
   # (other formats)
   # pdf: default
 
 execute:
-  freeze: true
+  freeze: auto
 
 
 

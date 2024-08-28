@@ -5,6 +5,7 @@ authors:
     affiliation: UBB Cluj, Centrul Interdisciplinar de Știința Datelor
     roles: data wrangling, graphics, modeling
     corresponding: true
+    email: buciu_petre2013@yahoo.com
   - name: Cornel Ban
     affiliation: de completat
     roles: redactare, cadru analitic, teoretizare
