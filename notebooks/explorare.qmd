@@ -3,3 +3,35 @@ title: "Explorarea Datelor"
 format: html
 ---
 
+## Metode
+
+Întrucât variabilele sondajului sunt în cea mai mare parte variabile nominale, unele putând fiind, întradevăr, considerate ordinale în urma unei recodări, vom alege metode multivariate speciale pentru a analiza aceste date.
+
+1. Analiză factorială exploratorie pe matricea corelațiilor policlorice.
+2. FAMD (o extensie a PCA pentru date de tip mixt (nominal/numeric)).
+3. Crearea unei metrici/distanțe de similaritate prin metode de învățare automată și folosirea acestei metrici mai departe pentru clusterizare/reducerea dimensionalițătii. 
+
+Ultima variantă este preferabilă opțiunii de a alege o distanță generală precum distanța Gower - des folosită în aceste cazuri cu date de tip mixt. Crearea metricii printr-o metodă (ne)supervizată ca `random forest` este de preferat pentru că fiecare variabilă primește o pondere special adaptată situației, care descrie mai bine structura naturală a datelor din spațiul multidimensional original. În cazul utilizării unei metrici generale, ca distanța Gower, toate variabilele nominale primesc aceeași pondere în scorul final al similarității instanțelor. Metoda automată poate fi folosită în mod nesupervizat cât și supervizat. Vom încerca ambele variante.
+
+### 1. Analiza factorială pe corelații policorice
+
+Prelucrăm datele din formatul `.sav` original într-un tabel. 
+
+```{r}
+library(tidyverse)
+library(psych)
+library(haven)
+library(here)
+library(survey)
+theme_set(hrbrthemes::theme_ipsum_es())
+
+df <- haven::read_sav(here::here('FES123-2021b.sav'), user_na = TRUE) |>
+      select(-contains("_alt"), -contains("_B"),
+             -contains("_C"), -matches("G[0-9]{2}[BC]"),
+             -SES03A, -SES03_old, -SES02, -AGEGRUP)
+
+demog <- df |> select(SES01:regdev)
+df <- df |> select(-all_of(names(demog)))
+
+surv <- survey::svydesign(data = df, ids = ~ CODADRESA, 
+                          weights = ~weight)

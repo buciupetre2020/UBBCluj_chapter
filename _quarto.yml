@@ -7,7 +7,8 @@ manuscript:
     - notebook: notebooks/explorare.qmd
       title: Exlorarea Datelor
   code-links: 
-    - repo: buciupetre2020/UBBCluj_chapter
+    - text: Source Code
+      href : https://github.com/buciupetre2020/UBBCluj_chapter
 
 format:
   html:
@@ -17,7 +18,7 @@ format:
     toc-location: left
     toc-title: Cuprins
     abstract-title: Abstract
-    theme: solar
+    theme: lumen
   docx: default
 
   # (other formats)
