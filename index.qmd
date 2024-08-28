@@ -1,0 +1,16 @@
+---
+title: Capitol Atitudini și valori tip progresist în România
+authors:
+  - name: Petre Buciu
+    affiliation: UBB Cluj, Centrul Interdisciplinar de Știința Datelor
+    roles: data wrangling and modeling
+    corresponding: true
+  - name: Cornel Ban
+    affiliation: - 
+    roles: redactare, cadru analitic, teoretizare
+    corresponding: true
+bibliography: references.bib
+---
+
+## Section
+This is a simple placeholder for the manuscript's main document [@knuth84].
