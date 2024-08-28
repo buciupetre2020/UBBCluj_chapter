@@ -6,7 +6,7 @@ authors:
     roles: data wrangling, graphics, modeling
     corresponding: true
   - name: Cornel Ban
-    affiliation: - 
+    affiliation: de completat
     roles: redactare, cadru analitic, teoretizare
     corresponding: true
 bibliography: references.bib
