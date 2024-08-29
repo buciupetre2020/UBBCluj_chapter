@@ -25,13 +25,41 @@ library(here)
 library(survey)
 theme_set(hrbrthemes::theme_ipsum_es())
 
+dict <- read_csv(here::here('dict.csv')) |> drop_na()
+
 df <- haven::read_sav(here::here('FES123-2021b.sav'), user_na = TRUE) |>
-      select(-contains("_alt"), -contains("_B"),
-             -contains("_C"), -matches("G[0-9]{2}[BC]"),
-             -SES03A, -SES03_old, -SES02, -AGEGRUP)
+      mutate(wave = case_when(between(DATAP, as.Date('2021-10-21'), 
+                                      as.Date('2021-11-08')) ~ 'W1', 
+                              between(DATAP, as.Date('2021-11-09'), 
+                                      as.Date('2021-11-23')) ~ 'W2',
+                              between(DATAP, as.Date('2021-11-24'), 
+                                      as.Date('2021-12-06')) ~ 'W3'))
 
-demog <- df |> select(SES01:regdev)
-df <- df |> select(-all_of(names(demog)))
+IDs <- df[,dict[dict$category=='ID', 1,drop=TRUE]]
+G <- df[,dict[dict$category=='G', 1, drop=TRUE]]
+W1 <- df[df$wave=='W1',dict[dict$category=='W', 1, drop=TRUE]]
+W2 <- df[df$wave=='W2',dict[dict$category=='W', 1, drop=TRUE]]
+W3 <- df[df$wave=='W3',dict[dict$category=='W', 1, drop=TRUE]]
+DEMOG <- df[,dict[dict$category=='DEMOG', 1, drop=TRUE]]
 
-surv <- survey::svydesign(data = df, ids = ~ CODADRESA, 
-                          weights = ~weight)
+model <- randomForest::randomForest(G |> 
+                                    mutate(across(everything(), as.factor)),
+                                    proximity=TRUE, mtry=5, 
+                                    ntree=1000, nodesize=100)
+
+```
+
+```{r}
+library(isotree)
+mod <- isotree::isolation.forest(data=G |> mutate(across(everything(), as.factor)), 
+                                 ntrees=1000)
+
+distance <- predict(mod, G |> mutate(across(everything(), as.factor)), type='dist')
+
+config <- umap::umap.defaults
+config$input <- 'dist'
+config$n_neighbors <- 5
+obj <- umap::umap(d=as.matrix(distance), config=config)
+
+
+```
