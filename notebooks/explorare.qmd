@@ -56,10 +56,8 @@ mod <- isotree::isolation.forest(data=G |> mutate(across(everything(), as.factor
 
 distance <- predict(mod, G |> mutate(across(everything(), as.factor)), type='dist')
 
-config <- umap::umap.defaults
-config$input <- 'dist'
-config$n_neighbors <- 5
-obj <- umap::umap(d=as.matrix(distance), config=config)
-
+clust <- cluster::pam(x = 1-distance, k=6, diss = TRUE)
+mod <- prcomp(as.matrix(distance), scale=F)
+#nu mai pierde timpul, apucă-te și selectează doar economicul și recodeaza variabilele...
 
 ```
