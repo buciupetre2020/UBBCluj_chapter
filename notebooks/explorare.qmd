@@ -35,14 +35,23 @@ df <- haven::read_sav(here::here('FES123-2021b.sav'), user_na = TRUE) |>
                               between(DATAP, as.Date('2021-11-24'), 
                                       as.Date('2021-12-06')) ~ 'W3'))
 
-IDs <- df[,dict[dict$category=='ID', 1,drop=TRUE]]
-G <- df[,dict[dict$category=='G', 1, drop=TRUE]]
-W1 <- df[df$wave=='W1',dict[dict$category=='W', 1, drop=TRUE]]
-W2 <- df[df$wave=='W2',dict[dict$category=='W', 1, drop=TRUE]]
-W3 <- df[df$wave=='W3',dict[dict$category=='W', 1, drop=TRUE]]
-DEMOG <- df[,dict[dict$category=='DEMOG', 1, drop=TRUE]]
+G <- df[,dict[dict$category %in% c("ID",'G'), 1, drop=TRUE]]
+W1 <- df[df$wave=='W1',dict[dict$category %in% c('ID','W'), 1, drop=TRUE]]
+W2 <- df[df$wave=='W2',dict[dict$category %in% c("ID",'W'), 1, drop=TRUE]]
+W3 <- df[df$wave=='W3',dict[dict$category %in% c("ID", "W"), 1, drop=TRUE]]
+DEMOG <- df[,dict[dict$category %in% c("ID", 'DEMOG'), 1, drop=TRUE]]
 
-model <- randomForest::randomForest(G |> 
+G <- G[,1:12]
+W1 <- W1[, names(W1) %in% dict[dict$var==1,1,drop=TRUE]]
+W2 <- W2[, names(W2) %in% dict[dict$var==1,1,drop=TRUE]]
+W3 <- W3[, names(W3) %in% dict[dict$var==1,1,drop=TRUE]]
+
+W1 <- W1[, W1 %>% apply(., MARGIN = 2, function(x) mean(is.na(x)) < 0.1)] |> drop_na()
+W2 <- W2[, W2 %>% apply(., MARGIN = 2, function(x) mean(is.na(x)) < 0.1)] |> drop_na()
+W3 <- W3[, W3 %>% apply(., MARGIN = 2, function(x) mean(is.na(x)) < 0.1)] |> drop_na()
+
+
+model <- randomForest::randomForest(G[,6:12] |> 
                                     mutate(across(everything(), as.factor)),
                                     proximity=TRUE, mtry=5, 
                                     ntree=1000, nodesize=100)

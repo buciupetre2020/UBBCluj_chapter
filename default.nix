@@ -6,7 +6,7 @@ rix(
              "haven", "psych", "missMDA", 
              "randomForest", "umap", 
              "cluster", "isotree", 
-             "survey"),
+             "survey", "sjlabelled"),
   system_pkgs = "quarto",
   ide = "other",
   shell_hook = "",
